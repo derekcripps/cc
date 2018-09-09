@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from .serializers import UserSerializer, GroupSerializer, CustomerSerializer, CompanySerializer, WarehouseSerializer, \
     ItemSerializer, UOMSerializer, CompanyListSerializer, WarehouseListSerializer
-from . permissions import HasGroupPermission
+from . permissions import HasModelPermission
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 
 
@@ -34,11 +34,12 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
 class CompanyViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
-    permission_classes = [HasGroupPermission]
-    required_groups = {
-        'main.add_company': ['CompanyMaintenance'],
-        'main.change_company': ['CompanyMaintenance'],
-        'main.add_company': ['__all__'],
+    permission_classes = [HasModelPermission]
+    required_model = {
+        'GET': ['company'],
+        'POST': ['company'],
+        'PUT': ['company'],
+        'DELETE': ['company'],
     }
     queryset = Company.objects.all().select_related('customer')
     serializer_class = CompanySerializer
