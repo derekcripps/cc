@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from rest_framework import permissions
 
 
@@ -45,3 +45,4 @@ class HasModelPermission(permissions.BasePermission):
         # Return True if the user has all the required groups or is staff.
         #return all([is_in_group(request.user, group_name) if group_name != "__all__"
         #            else True for group_name in required_models]) or (request.user and request.user.is_staff)
+

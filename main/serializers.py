@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from rest_framework import serializers
 from .models import Customer, Company, Warehouse, Item, UOM
 
@@ -59,3 +59,4 @@ class UOMSerializer(serializers.ModelSerializer):
     class Meta:
         model = UOM
         fields = ('id', 'company', 'code', 'description')
+

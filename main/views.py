@@ -1,10 +1,22 @@
 from .models import Customer, Company, Warehouse, Item, UOM
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from rest_framework import viewsets
 from .serializers import UserSerializer, GroupSerializer, CustomerSerializer, CompanySerializer, WarehouseSerializer, \
     ItemSerializer, UOMSerializer, CompanyListSerializer, WarehouseListSerializer
 from . permissions import HasModelPermission
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from django.contrib.contenttypes.models import ContentType
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+
+""" Function Based API - Does not need queryset, and requires different URL formatting"""
+@permission_classes(IsAuthenticated, )
+@api_view()
+def permission_view(request):
+    logged_in_user = request.user
+    return Response(data=logged_in_user.get_all_permissions())
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -58,6 +70,13 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
 class WarehouseViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = [HasModelPermission]
+    required_model = {
+        'GET': ['warehouse'],
+        'POST': ['warehouse'],
+        'PUT': ['warehouse'],
+        'DELETE': ['warehouse'],
+    }
     queryset = Warehouse.objects.all()
     serializer_class = WarehouseSerializer
     action_serializers = {
@@ -73,11 +92,12 @@ class WarehouseViewSet(viewsets.ModelViewSet):
         return super(WarehouseViewSet, self).get_serializer_class()
 
 
-
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
+
 class UOMViewSet(viewsets.ModelViewSet):
     queryset = UOM.objects.all()
     serializer_class = UOMSerializer
+
