@@ -1,17 +1,16 @@
 from .models import Customer, Company, Warehouse, Item, UOM
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from .serializers import UserSerializer, GroupSerializer, CustomerSerializer, CompanySerializer, WarehouseSerializer, \
     ItemSerializer, UOMSerializer, CompanyListSerializer, WarehouseListSerializer
 from . permissions import HasModelPermission
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
-from django.contrib.contenttypes.models import ContentType
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 
-""" Function Based API - Does not need queryset, and requires different URL formatting"""
+# Function Based API - Does not need queryset, and requires different URL formatting
 @permission_classes(IsAuthenticated, )
 @api_view()
 def permission_view(request):
@@ -20,26 +19,17 @@ def permission_view(request):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (TokenAuthentication,SessionAuthentication)
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 
